@@ -4,10 +4,10 @@ import ProductDetailsPage from "./ProductDetailsPage";
 
 function PriceHistoryTable({ priceHistory, onClose }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({})
+  const [currentProduct, setCurrentProduct] = useState({});
 
   const openModal = (product) => {
-    setCurrentProduct(product)
+    setCurrentProduct(product);
     setIsModalOpen(true);
   };
 
@@ -27,16 +27,50 @@ function PriceHistoryTable({ priceHistory, onClose }) {
     return Math.round(change * 100) / 100;
   };
 
+  // Inline styling for table, rows, and cells
+  const tableStyles = {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '20px',
+  };
+
+  const thStyles = {
+    backgroundColor: '#f4f4f4',
+    padding: '10px 15px',
+    textAlign: 'left',
+    fontWeight: 'bold',
+    borderBottom: '2px solid #ddd',
+  };
+
+  const tdStyles = {
+    padding: '10px 15px',
+    textAlign: 'left',
+    borderBottom: '1px solid #ddd',
+  };
+
+  const rowStyles = {
+    transition: 'background-color 0.3s ease',
+  };
+
+  const hoverRowStyles = {
+    backgroundColor: '#f1f1f1',
+  };
+
+  const priceChangeStyles = (change) => ({
+    color: change > 0 ? 'red' : 'green',
+    fontWeight: 'bold',
+  });
+
   return (
     <div>
       <h2>Price History</h2>
-      <table>
+      <table style={tableStyles}>
         <thead>
-          <tr className="row">
-            <th>Updated At</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Price Change</th>
+          <tr style={rowStyles}>
+            <th style={thStyles}>Updated At</th>
+            <th style={thStyles}>Name</th>
+            <th style={thStyles}>Price</th>
+            <th style={thStyles}>Price Change</th>
           </tr>
         </thead>
         <tbody>
@@ -45,12 +79,21 @@ function PriceHistoryTable({ priceHistory, onClose }) {
             const change = getPriceChange(product);
 
             return (
-              <tr key={product.url} className="row">
-                <td>{priceData.date}</td>
-                <td ><a onClick={() => openModal(product)}>{product.name}</a></td>
-                <td>${priceData.price}</td>
-                <td style={change > 0 ? { color: "red" } : { color: "green" }}>
-                  {change >= 0 && "+" }
+              <tr
+                key={product.url}
+                style={rowStyles}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f1f1f1')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
+              >
+                <td style={tdStyles}>{priceData.date}</td>
+                <td style={tdStyles}>
+                  <a onClick={() => openModal(product)} style={{ color: '#007BFF', cursor: 'pointer' }}>
+                    {product.name}
+                  </a>
+                </td>
+                <td style={tdStyles}>${priceData.price}</td>
+                <td style={{ ...tdStyles, ...priceChangeStyles(change) }}>
+                  {change >= 0 && "+"}
                   {change}%
                 </td>
               </tr>
@@ -58,7 +101,20 @@ function PriceHistoryTable({ priceHistory, onClose }) {
           })}
         </tbody>
       </table>
-      <button onClick={onClose}>Close</button>
+      <button
+        onClick={onClose}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginTop: '20px',
+        }}
+      >
+        Close
+      </button>
       <ModalComponent
         isOpen={isModalOpen}
         closeModal={closeModal}

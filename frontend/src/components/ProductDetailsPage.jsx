@@ -11,13 +11,13 @@ const ProductDetailsPage = ({ product }) => {
     priceHistory,
   } = product;
 
+  // Format date to a readable format
   function formatDate(date) {
     var aaaa = date.getFullYear();
     var gg = date.getDate();
     var mm = date.getMonth() + 1;
 
     if (gg < 10) gg = "0" + gg;
-
     if (mm < 10) mm = "0" + mm;
 
     var cur_day = aaaa + "-" + mm + "-" + gg;
@@ -27,14 +27,13 @@ const ProductDetailsPage = ({ product }) => {
     var seconds = date.getSeconds();
 
     if (hours < 10) hours = "0" + hours;
-
     if (minutes < 10) minutes = "0" + minutes;
-
     if (seconds < 10) seconds = "0" + seconds;
 
     return cur_day + " " + hours + ":" + minutes + ":" + seconds;
   }
 
+  // Prepare price history data for the chart
   const dates = priceHistory
     .map((history) => formatDate(new Date(history.date)))
     .reverse();
@@ -48,6 +47,16 @@ const ProductDetailsPage = ({ product }) => {
       xaxis: {
         categories: dates, // Example categories (dates)
       },
+      title: {
+        text: "Price History",
+        align: 'center',
+        style: {
+          fontSize: '16px',
+          color: '#333',
+          fontWeight: 'bold',
+        },
+      },
+      colors: ['#FF5733'], // Line color for the chart
     },
     series: [
       {
@@ -58,32 +67,46 @@ const ProductDetailsPage = ({ product }) => {
   };
 
   return (
-    <div>
-      <h2>{name}</h2>
-      <img src={img} alt="Product" />
-      <p>
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h2 style={{ color: "#333", fontSize: "24px", fontWeight: "bold" }}>{name}</h2>
+      <img src={img} alt="Product" style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }} />
+      
+      <p style={{ marginTop: "10px", fontSize: "16px", color: "#555" }}>
         URL:{" "}
-        <a href={`${source}${productUrl}`} target="_blank">
-          View product.
+        <a
+          href={`${source}${productUrl}`}
+          target="_blank"
+          style={{ color: "#007BFF", textDecoration: "none" }}
+        >
+          View product
         </a>
       </p>
-      <p>
+      
+      <p style={{ fontSize: "16px", color: "#555" }}>
         Source:{" "}
-        <a target="_blank" href={source}>
+        <a
+          href={source}
+          target="_blank"
+          style={{ color: "#007BFF", textDecoration: "none" }}
+        >
           {source}
         </a>
       </p>
-      <p>Newest Price At: {createdAt}</p>
-      <h2>Price History</h2>
-      <h3>
+      
+      <p style={{ fontSize: "16px", color: "#555" }}>Newest Price At: {createdAt}</p>
+      
+      <h3 style={{ fontSize: "20px", color: "#333", fontWeight: "bold" }}>
         Current Price: ${prices.length > 0 ? prices[prices.length - 1] : "N/A"}
       </h3>
-      <ApexCharts
-        options={chartData.options}
-        series={chartData.series}
-        type="line"
-        height={300}
-      />
+      
+      <div style={{ marginTop: "20px" }}>
+        <ApexCharts
+          options={chartData.options}
+          series={chartData.series}
+          type="line"
+          height={300}
+        />
+      </div>
     </div>
   );
 };
